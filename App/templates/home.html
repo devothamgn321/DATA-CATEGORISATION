@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}
+    This is my home page
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <div class="ten columns">
+                    <label for="SurveyResponseFile">Survey Response file: {{ card_responses_filename }}</label>
+                    <input class="button" type="file" id="SurveyResponseFile" name="response_file">
+                </div>
+                <div class="two columns">
+                    <label for="SurveySubmitButton">&nbsp;</label>
+                    <input type="submit" value="Insert into DB" id="SurveySubmitButton" class="button-primary">
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <ul class="tab-nav">
+                {% for card_name in card_names %}
+                    {% if loop.index == 1 %}
+                        <li>
+                            <a class="button active" href="#{{card_name}}">{{ card_name }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a class="button" href="#{{ card_name }}">{{ card_name }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="row" style="overflow-x: scroll;">
+
+            <div class="tab-content">
+                {% for card_name in card_names %}
+                    {% if loop.index == 1 %}
+                        <div class="tab-pane active" id="{{ card_name }}">
+                    {% else %}
+                        <div class="tab-pane" id="{{ card_name }}">
+                    {% endif %}
+                    <form action="/download" method="post">
+                        <input type="hidden" name="card_id" value="{{ card_name }}">
+                        <button type="submit" value="{{card_name}}">Download</button>
+                    </form>
+                    <table>
+                        <tr>
+                            <td>
+                                <table  style="border: 1px solid black;">
+                                    <thead style="background: #000; color: #fff; font-weight: 700;">
+                                        <tr>
+                                            {% for i in card_headers[loop.index-1] %}
+                                                <td  style="border: 1px solid white ";">{{ i }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for i in cards[loop.index - 1] %}
+                                        <tr>
+                                            {% for j in i %}
+                                                <td style="border: 1px solid black">{{ j }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}
